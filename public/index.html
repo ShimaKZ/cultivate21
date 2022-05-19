@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>  
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://unpkg.com/element-plus/dist/index.css" />
+
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src="https://unpkg.com/element-plus"></script>
+
+  <title>勤创大培训报名表</title>
+
+</head>
+
+
+<body>
+  <div class="demo" id='app' style="margin: auto;">
+    <jt-start v-if="curpage === 'start'" @next= "curpage = 'profile'"></jt-start>
+    <jt-profile v-else-if="curpage === 'profile'" @next="curpage='final'"></jt-profile>
+    <jt-final v-else></jt-final>
+  </div>
+</body>
+
+<script type="text/x-template" id="final">
+  <div>
+    <img src="bg3.jpg"
+    style="height:100vh;width:100vw;z-index:-10;position: absolute;">
+    <img src="pen.png"
+    style="height:100vh;width:100vw;z-index:-10;position: absolute;">
+  </div>
+</script>
+
+<script type="text/x-template" id="start">
+
+  <div>
+    <img src="bg1.jpg"
+      style="height:100vh;width:100vw;z-index:-10;position: absolute;">
+    <img src="downring.png"
+      class="circle" style="height:100vh;width:100vw;z-index:-9;position: absolute;">
+    <img src="pen.png"
+      style="height:100vh;width:100vw;z-index:-8;position: absolute;">
+    <img src="upring.png"
+      class="circle" style="height:100vh;width:100vw;z-index:-7;position: absolute;">
+  </div>
+
+  <div style="margin:0;width:100vw;height:100vh;" id="app" @click="$emit('next')"></div>
+</script>
+
+<script type="text/x-template" id="profile">
+    <div>
+      <img src="bg2.jpg"
+        style="height:100vh;width:100vw;z-index:-7;position: absolute;">
+
+
+        
+    </div>
+    <el-row type="flex" style="margin-top:10%;z-index: -1;">
+      <el-form ref="form" :model="form" :rules="rules" label-width="60px">
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model="form.name"></el-input>
+        </el-form-item>
+        
+        <el-form-item label="学号" prop="number">
+          <el-input v-model="form.number"></el-input>
+        </el-form-item>
+
+        <el-form-item label='部门' prop='department'>
+          <el-select v-model="form.department" placeholder="请选择你的英雄">
+            <el-option v-for="option in departments" 
+              :key="option.value"
+              :label="option.label"
+              :value="option.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label='宿舍' prop='dorm'>
+          <el-input v-model="form.dorm" placeholder="我们将通过宿舍信箱来送出邀请函"></el-input>
+        </el-form-item>
+        <el-form-item label='手机' prop="tele">
+          <el-input v-model="form.tele"></el-input>
+        </el-form-item>
+
+        <el-form-item label='QQ' prop='qq'>
+          <el-input v-model="form.qq"></el-input>
+        </el-form-item>
+        <el-form-item label='期望' prop="hope" >
+          <el-input v-model="form.hope" placeholder="你对鸡腿的大培训有什么期望呢"></el-input>
+        </el-form-item>
+      </el-form>
+    </el-row>
+    <el-row type="flex" style="margin-top:1vh">
+        <img src="bt2.png"
+          style="height:23vh;width:100vw;z-index:-7;position: absolute; margin-bottom:10vh" @click="submit()">
+    </el-row>
+</script>
+
+<style>
+  
+  .demo {
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100vw;
+    height:100vh;
+    min-width: 1000px;
+    z-index: -10;
+  }
+  .el-form-item {
+    margin-left:5%;
+    width:75vw;
+  }
+  .el-input {
+    width:75vw;
+  }
+  .circle {
+    animation-name: WuHu;
+    animation-duration:2s;
+    animation-iteration-count:999;
+    animation-direction: alternate;
+  }
+  @keyframes WuHu{
+    0%   {top:0px;}
+    100% {top:50px;}
+  }
+  .title{
+    font-family: "胡晓波男神体";
+    text-align: center;
+  }
+</style>
+
+<script>
+  const JTStart = {
+    template: "#start",
+    emits: ['next']
+  }
+  const JTFinal = {
+    template: "#final"
+  }
+
+  const JTProfile = {
+    template: '#profile',
+    
+    props:['index'],
+
+    data(){
+      return {
+        departments: [
+          {label:'bgs',value:'bgs'},
+          {label:'植发',value:'zf'},
+          {label:'鸡腿',value:'jt'},
+          {label:'人资',value:'rz'},
+          {label:'创指',value:'cz'},
+          {label:'外拓',value:'wt'},
+          {label:'品公',value:'pg'},
+        ],
+
+        choices: [
+          {label:'我要做技术带师',value:'1'},
+          {label:'我要做美工聚砷',value:'2'},
+          {label:'小孩子才做选择，我全都要',value:'3'},
+        ],
+
+        form: {
+          name:'',
+          number:'',
+          department:'',
+          choice:'',
+          tele:'',
+          qq:'',
+          hope:'',
+          dorm:'',
+        },
+
+        rules: {
+          name: [{
+            required: true,
+            message: '请填写姓名',
+            trigger: 'blur'
+          }],
+          dorm: [{
+            required: true,
+            message: '请填写宿舍号',
+            trigger: 'blur'
+          }],
+          number: [{
+            required: true,
+            message: '请填写学号',
+            trigger: 'blur'
+          }],
+          department: [{
+            required: true,
+            message: '请选择部门',
+            trigger: 'change'
+          }],
+          choice: [{
+            required: true,
+            message: '请选择想听的项目',
+            trigger: 'change'
+          }],
+          tele: [{
+            required: true,
+            message: '请填写电话',
+            trigger: 'blur'
+          }],
+          qq: [{
+            required: true,
+            message: '请填写QQ',
+            trigger: 'blur'
+          }],
+          hope: [{
+            requerd: false,
+            trigger: 'blur'
+          }]
+        }
+      }
+    },
+    methods:{
+      async submit() {
+        let res=await (new Promise((resolve, reject) => {
+          this.$refs['form'].validate(valid => resolve(valid))
+        }))
+        if(res){
+          try {
+            let ret=JSON.parse(JSON.stringify(this.$refs['form'].model))
+            let res = await axios.post('/submit', ret)
+            this.$emit('next')
+          } catch (e) {
+            this.$message.error('提交失败！')
+          }
+        }
+      }
+    }
+  }
+
+  const Main = {
+    data(){
+      return {
+        curpage:'start'
+      }
+    }
+  }
+  const app = Vue.createApp(Main);
+  app.component('jt-profile',JTProfile);
+  app.component('jt-start',JTStart);
+  app.component('jt-final',JTFinal);
+  app.use(ElementPlus);
+  app.mount("#app");
+
+</script>
+
+</html>
